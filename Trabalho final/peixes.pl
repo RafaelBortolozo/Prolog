@@ -1,52 +1,59 @@
 :- dynamic sim/1, nao/1.
 
+/*
+   Bem vindo ao "Akinator de peixe"
+   Para iniciar o algoritmo, digite "init."
+   
+   Desenvolvedor: Rafael Bortolozo
+*/
+
 %  Lista de peixes
-selecao(bagre) :- is("Peixe nao possui escamas"),
+peixe(bagre) :-   is("Peixe nao possui escamas"),
                   is("Cor do peixe eh preto"),
                   is("Possui carne gorda"),
                   nl.
 
-selecao(tilapia) :- is("Peixe possui escamas"),
+peixe(tilapia) :-   is("Peixe possui escamas"),
                     is("Cor do peixe varia entre cinza e verde-azulado"),
                     is("Possui carne magra"),
                     nl.
   
-selecao(carpa_capim) :- is("Peixe possui escamas"),
+peixe(carpa_capim) :-   is("Peixe possui escamas"),
                         is("Cor do peixe eh amarelo prateado"),
                         is("Possui carne magra"),
                         nl.
 
-selecao(cascudo) :- is("Peixe possui escamas"),
+peixe(cascudo) :-   is("Peixe possui escamas"),
                     is("Cor do peixe eh preto"),
                     is("Possui carne magra"),
                     nl.
 
-selecao(dourado) :- is("Peixe possui escamas"),
+peixe(dourado) :-   is("Peixe possui escamas"),
                     is("Cor do peixe eh amarelo-laranja"),
                     is("Possui carne gorda"),
                     nl.
 
-selecao(pintado) :- is("Peixe nao possui escamas"),
+peixe(pintado) :-   is("Peixe nao possui escamas"),
                     is("Cor do peixe eh cinza com pintas pretas"),
                     is("Possui carne gorda"),
                     nl.
 
-selecao(pacu) :-  is("Peixe possui escamas"),
+peixe(pacu) :-    is("Peixe possui escamas"),
                   is("Cor do peixe eh cinza"),
                   is("Possui carne gorda"),
                   nl.
 
-selecao(carpa_cabecuda) :- is("Peixe possui escamas"),
+peixe(carpa_cabecuda) :-   is("Peixe possui escamas"),
                            is("Cor do peixe eh cinza"),
                            is("Possui carne magra"),
                            nl.
 
-selecao(traira) :-  is("Peixe possui escamas"),
+peixe(traira) :-    is("Peixe possui escamas"),
                     is("Cor do peixe eh marrom"),
                     is("Possui carne gorda"),
                     nl.
 
-selecao(lambari) :- is("Peixe possui escamas"),
+peixe(lambari) :-   is("Peixe possui escamas"),
                     is("Cor do peixe eh prata"),
                     is("Possui carne magra"),
                     nl.
@@ -58,7 +65,8 @@ removeOthers(Attribute, [H|T]) :- (dif(H, Attribute) ->
                                     removeOthers(Attribute, T).
 
 
-/* Testa se o atributo está nesta categoria, se sim, chama eliminar outros */
+/* Testa se o atributo está nesta categoria,
+se sim entao chama a funcao que elimina todos os outros atributos*/
 removeMember(Attribute, List) :- member(Attribute, List) ->
                                         removeOthers(Attribute, List),
                                         true, !;
@@ -68,16 +76,30 @@ removeMember(Attribute, List) :- member(Attribute, List) ->
 /* Chama  removeMember para cada categoria da ocorrência do Atributo */
 elimination(Attribute) :-
   removeMember(Attribute,
-    ["Peixe nao possui escamas", "Peixe possui escamas"]), true;
+    ["Peixe nao possui escamas",
+    "Peixe possui escamas"]),
+    true;
   removeMember(Attribute,
-    ["Cor do peixe eh preto", "Cor do peixe varia entre cinza e verde-azulado","Cor do peixe eh amarelo prateado","Cor do peixe eh amarelo-laranja","Cor do peixe eh cinza com pintas pretas","Cor do peixe eh cinza", "Cor do peixe eh marrom", "Cor do peixe eh prata" ]), true;
+    ["Cor do peixe eh preto",
+    "Cor do peixe varia entre cinza e verde-azulado",
+    "Cor do peixe eh amarelo prateado",
+    "Cor do peixe eh amarelo-laranja",
+    "Cor do peixe eh cinza com pintas pretas",
+    "Cor do peixe eh cinza",
+    "Cor do peixe eh marrom",
+    "Cor do peixe eh prata" ]),
+    true;
   removeMember(Attribute,
-    ["Possui carne magra","Possui carne gorda"]), true.
-  
-    
+    ["Possui carne magra",
+    "Possui carne gorda"]),
+    true.
 
 
-/* afirmar e desabilitar Atributos com base na entrada do usuário */
+/* Imprime um atributo do peixe e solicita uma resposta do usuario,
+se responder sim entao elimina o atributo e avança para o próximo nivel de atributos
+se responder nao entao troca de atributo
+se nao existir mais atributos, entao o peixe nao existe
+*/
 is(Attribute) :-
   ((sim(Attribute) ->
     true, !;
@@ -97,16 +119,16 @@ is(Attribute) :-
     write("RESPONDA 'sim.' ou 'nao.'"), nl,
     is(Attribute)))).
 
-/* Menu Princial */
+/* Exibe as questoes e retorna uma resposta */
 search :-
   write("Me responda..."), nl,
-  (selecao(X),
+  (peixe(X),
       write("Eu acho que eh "), write(X), write(" :)."), nl);
   (write("Nao conheco esse peixe"), nl).
 
-
+/* Inicia o algoritmo */
 init :- write("Akinator de peixe"), nl,
-        /* retractall: Realiza a remoção de cláusulas de um predicado dinâmico */
+        /* Remove as cláusulas de um predicado dinâmico */
          retractall(sim(_)), 
          retractall(nao(_)),
     search,
